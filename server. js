@@ -1,0 +1,67 @@
+const express = require("express");
+const path = require("path");
+const bodyParser = require("body-parser");
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Middleware
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+// Serve frontend files
+app.use(express.static(path.join(__dirname, "public")));
+
+// POST route for form submission
+app.post("/submit", (req, res) => {
+  const { fullname, email, password, confirmPassword, age, gender, terms } = req.body;
+
+  // Validation
+  let errors = {};
+
+  if (!fullname || fullname.trim() === "") {
+    errors.fullname = "Full name is required";
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!email || !emailRegex.test(email)) {
+    errors.email = "Invalid email address";
+  }
+
+  if (!password || password.length < 6) {
+    errors.password = "Password must be at least 6 characters";
+  }
+
+  if (confirmPassword !== password) {
+    errors.confirmPassword = "Passwords do not match";
+  }
+
+  if (!age || age < 18) {
+    errors.age = "Age must be 18 or older";
+  }
+
+  if (!gender || gender === "") {
+    errors.gender = "Please select gender";
+  }
+
+  if (!terms || terms !== "true") {
+    errors.terms = "You must accept Terms & Conditions";
+  }
+
+  // If errors exist, return 400
+  if (Object.keys(errors).length > 0) {
+    return res.status(400).json({ success: false, errors });
+  }
+
+  // Success
+  res.json({ success: true, message: "Form submitted successfully!" });
+});
+
+// Default route
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+app.listen(PORT, () => {
+  console.log(`✅ Server running at http://localhost:${PORT}`);
+});
