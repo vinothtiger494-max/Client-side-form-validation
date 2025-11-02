@@ -1,0 +1,11 @@
+{
+    "name": "client-side-form-validation",
+    "version": "1.0.0",
+    "description": "IBM-NJ Project: Client-side Form Validation using HTML, CSS, and JS",
+    "scripts": {
+      "start": "live-server"
+    },
+    "keywords": ["form", "validation", "client-side", "javascript", "ibm-nj"],
+    "author": "Your Name",
+    "license": "MIT"
+  } 
